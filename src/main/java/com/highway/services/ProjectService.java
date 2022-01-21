@@ -22,5 +22,14 @@ public class ProjectService {
 			throw new ProjectIdException("Project Identifier duplicated"+project.getProjectIdentifier().toUpperCase());
 		}
 	}
+	
+	public Project findByProjectIdentifier(String projectIdentifier) {
+		Project project = this.projectRepos.findByProjectIdentifier(projectIdentifier.toUpperCase());
+		if(project==null) {
+			throw new ProjectIdException("No Found with Project Identifier : "+projectIdentifier.toUpperCase());
+			
+		}
+		return project;
+	}
 
 }
