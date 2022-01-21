@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Backlog {
@@ -16,8 +20,12 @@ public class Backlog {
 	private String projectIdentifier;
 
 	
-//	One-to-One with Project
-//	Each Project has only one Project
+//	One-to-One with Project. Each Project has only one Project
+	@OneToOne
+	@JoinColumn(name = "project_id",nullable = false)
+	@JsonIgnore
+	private Project project;
+	
 	
 //	 One-to-many with Project and its Task
 	
@@ -30,6 +38,15 @@ public class Backlog {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
 	public Integer getPTSequence() {
 		return PTSequence;
 	}
