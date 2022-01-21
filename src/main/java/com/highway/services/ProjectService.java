@@ -1,5 +1,7 @@
 package com.highway.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,9 @@ public class ProjectService {
 	@Autowired
 	private ProjectRepos projectRepos;
 	
-	
+	public List<Project> getAllProjects(){
+		return projectRepos.findAll();
+	}
 	public Project	saveOrUpdateProject(Project project) {
 		try {
 			project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
@@ -24,12 +28,20 @@ public class ProjectService {
 	}
 	
 	public Project findByProjectIdentifier(String projectIdentifier) {
-		Project project = this.projectRepos.findByProjectIdentifier(projectIdentifier.toUpperCase());
-		if(project==null) {
-			throw new ProjectIdException("No Found with Project Identifier : "+projectIdentifier.toUpperCase());
-			
-		}
+		Project project = this.projectRepos
+				.findByProjectIdentifier(projectIdentifier.toUpperCase())
+				.orElseThrow(()-> 
+						new ProjectIdException("No Found with Project Identifier : "+projectIdentifier.toUpperCase()));
+
 		return project;
 	}
 
+	public void deleteProjectByIdentifier(String projectId) {
+		Project project = projectRepos
+				.findByProjectIdentifier(projectId.toUpperCase())
+				.orElseThrow(()-> 
+						new ProjectIdException("There is no Project with Identifier : "+projectId.toUpperCase()));
+
+		projectRepos.delete(project);
+	}
 }
