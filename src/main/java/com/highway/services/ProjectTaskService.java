@@ -61,7 +61,15 @@ public class ProjectTaskService {
 	}
 	
 	public ProjectTask findByProjectSequence(String backlogId,String ptId) {
-		return projectTaskRepo.findByProjectSequence(ptId).orElseThrow(()->
-		new ProjectNotFoundException("Project Task  not found."));
+		Backlog backlog = backlogRepo.findByProjectIdentifier(backlogId)
+				.orElseThrow(()->new ProjectNotFoundException(String.format("Project with id %s does not exist.", backlogId)));
+		
+		ProjectTask projectTask=projectTaskRepo.findByProjectSequence(ptId).orElseThrow(()->
+		new ProjectNotFoundException("Project Task  '" + ptId + "' not found."));
+		
+		if(!projectTask.getProjectIdentifier().equals(backlog.getProjectIdentifier())) {
+			throw new ProjectNotFoundException("Project task '" +ptId +"' does not exist in project : " + backlogId);
+		}
+		return projectTask;
 	}
 }
