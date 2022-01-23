@@ -72,4 +72,10 @@ public class ProjectTaskService {
 		}
 		return projectTask;
 	}
+	
+	public ProjectTask updateByProjectSequence(ProjectTask task,String backlogId,String taskId) {
+		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId);
+		projectTask =task;
+		return projectTask;
+	}
 }
