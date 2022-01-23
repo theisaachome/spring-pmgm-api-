@@ -78,4 +78,10 @@ public class ProjectTaskService {
 		projectTask =task;
 		return projectTask;
 	}
+	public void deleteProjectTask(String backlogId,String taskId) {
+		
+		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId);
+		projectTask.getBacklog().removeProjectTask(projectTask);
+		projectTaskRepo.delete(projectTask);
+	}
 }

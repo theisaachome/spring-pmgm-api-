@@ -71,7 +71,7 @@ public class Backlog {
 		return projectTasks;
 	}
 
-	public void setProjectTasks(ProjectTask projectTask) {
+	public void setProjectTask(ProjectTask projectTask) {
 		this.projectTasks.add(projectTask);
 	}
 	public void removeProjectTask(ProjectTask projectTask) {
