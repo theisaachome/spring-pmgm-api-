@@ -1,10 +1,16 @@
 package com.highway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,8 +33,9 @@ public class Backlog {
 	private Project project;
 	
 	
-//	 One-to-many with Project and its Task
-	
+//	 One-to-many with Backlog and its ProjectTask
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "backlog")
+	private List<ProjectTask> projectTasks = new ArrayList<>(); 
 	
 	public Backlog(){}
 	
@@ -59,6 +66,19 @@ public class Backlog {
 	public void setProjectIdentifier(String projectIdentifier) {
 		this.projectIdentifier = projectIdentifier;
 	}
+
+	public List<ProjectTask> getProjectTasks() {
+		return projectTasks;
+	}
+
+	public void setProjectTasks(ProjectTask projectTask) {
+		this.projectTasks.add(projectTask);
+	}
+	public void removeProjectTask(ProjectTask projectTask) {
+		this.projectTasks.remove(projectTask);
+	}
+	
+	
 	
 
 }

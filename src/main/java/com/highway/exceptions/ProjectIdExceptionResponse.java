@@ -3,18 +3,18 @@ package com.highway.exceptions;
 
 public class ProjectIdExceptionResponse {
 	
-	private String projectIdentifier;
+	private String projectNotFound;
 	
 	public ProjectIdExceptionResponse(String projectIdentifier) {
-		this.projectIdentifier=projectIdentifier;
+		this.projectNotFound=projectIdentifier;
 	}
 
 	public String getProjectIdentifier() {
-		return projectIdentifier;
+		return projectNotFound;
 	}
 
 	public void setProjectIdentifier(String projectIdentifier) {
-		this.projectIdentifier = projectIdentifier;
+		this.projectNotFound = projectIdentifier;
 	}
 	
 	

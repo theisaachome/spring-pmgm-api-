@@ -2,14 +2,21 @@ package com.highway.domain;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ProjectTask {
@@ -23,7 +30,9 @@ public class ProjectTask {
 	@NotBlank(message = "Please include summary.")
 	private String summary;
 	private String acceptanceCriteria;
-	private String status;
+	@Column(length = 32, columnDefinition = "varchar(32) default 'TO_DO'")
+	@Enumerated(value = EnumType.STRING)
+	private PStatus status;
 	private Integer priority;
 	private LocalDate dueDate;
 	
@@ -35,6 +44,10 @@ public class ProjectTask {
 	@Column(updatable = false)
 	private String projectIdentifier;
 //	Many to One to Project
+	@ManyToOne(cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "backlog_id",updatable = false,nullable = false)
+	@JsonIgnore
+	private  Backlog backlog;
 	
 	public ProjectTask() {}
 	
@@ -44,6 +57,15 @@ public class ProjectTask {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
+	}
+
 	public String getProjectSequence() {
 		return projectSequence;
 	}
@@ -62,12 +84,7 @@ public class ProjectTask {
 	public void setAcceptanceCriteria(String acceptanceCriteria) {
 		this.acceptanceCriteria = acceptanceCriteria;
 	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+
 	public Integer getPriority() {
 		return priority;
 	}
@@ -101,6 +118,14 @@ public class ProjectTask {
 	}
 	
 	
+	public PStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(PStatus status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ","
