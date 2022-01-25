@@ -22,6 +22,8 @@ public class UserService {
 			// make sure username unqiue
 			newUser.setUsername(newUser.getUsername());
 			
+			newUser.setConfirmPassword("");
+			
 			return userRepos.save(newUser);
 		} catch (Exception e) {
 			throw new UsernameAlreadyExistException("username already exist");

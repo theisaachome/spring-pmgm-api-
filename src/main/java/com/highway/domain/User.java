@@ -37,7 +37,7 @@ public class User implements UserDetails {
 	private String password;
 	
 	@Transient
-	private String confirmpassword;
+	private String confirmPassword;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
 
@@ -83,14 +83,15 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
+   
 
-	public String getConfirmpassword() {
-		return confirmpassword;
+	public String getConfirmPassword() {
+		return confirmPassword;
 	}
 
 
-	public void setConfirmpassword(String confirmpassword) {
-		this.confirmpassword = confirmpassword;
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
 	}
 
 
