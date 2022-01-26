@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.highway.domain.Backlog;
 import com.highway.domain.PStatus;
 import com.highway.domain.ProjectTask;
+import com.highway.domain.User;
 import com.highway.exceptions.ProjectNotFoundException;
 import com.highway.repos.BacklogRepo;
-import com.highway.repos.ProjectRepos;
 import com.highway.repos.ProjectTaskRepo;
 
 @Service
@@ -20,8 +20,7 @@ public class ProjectTaskService {
 	@Autowired
 	private ProjectTaskRepo projectTaskRepo;
 	
-	@Autowired
-	private ProjectRepos  projectRepos;
+
 	@Autowired
 	private ProjectService projectService;
 	
@@ -48,34 +47,33 @@ public class ProjectTaskService {
 			return projectTaskRepo.save(projectTask);
 	}
 
-	public List<ProjectTask> findBacklogById(String id) {
-		projectRepos.findByProjectIdentifier(id).orElseThrow(
-					()->  new ProjectNotFoundException(String.format("Project With ID %s does not exist.", id))
-				);
+	public List<ProjectTask> findBacklogById(String id,String username) {
+		projectService.findByProjectIdentifier(id,username);
+		
 		return projectTaskRepo.findByProjectIdentifierOrderByPriority(id);
 	}
 	
-	public ProjectTask findByProjectSequence(String backlogId,String ptId) {
-		Backlog backlog = backlogRepo.findByProjectIdentifier(backlogId)
-				.orElseThrow(()->new ProjectNotFoundException(String.format("Project with id %s does not exist.", backlogId)));
+	public ProjectTask findByProjectSequence(String backlogId,String ptId,String username) {
+		projectService.findByProjectIdentifier(backlogId, username).getBacklog();
 		
 		ProjectTask projectTask=projectTaskRepo.findByProjectSequence(ptId).orElseThrow(()->
 		new ProjectNotFoundException("Project Task  '" + ptId + "' not found."));
 		
-		if(!projectTask.getProjectIdentifier().equals(backlog.getProjectIdentifier())) {
+		if(!projectTask.getProjectIdentifier().equals(backlogId)) {
 			throw new ProjectNotFoundException("Project task '" +ptId +"' does not exist in project : " + backlogId);
 		}
 		return projectTask;
 	}
 	
-	public ProjectTask updateByProjectSequence(ProjectTask task,String backlogId,String taskId) {
-		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId);
+	public ProjectTask updateByProjectSequence(ProjectTask task,String backlogId,String taskId,String username) {
+		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId,username);
 		projectTask =task;
-		return projectTask;
-	}
-	public void deleteProjectTask(String backlogId,String taskId) {
 		
-		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId);
+		return projectTaskRepo.save(projectTask);
+	}
+	public void deleteProjectTask(String backlogId,String taskId,String username) {
+		
+		ProjectTask projectTask = this.findByProjectSequence(backlogId, taskId,username);
 		projectTask.getBacklog().removeProjectTask(projectTask);
 		projectTaskRepo.delete(projectTask);
 	}
