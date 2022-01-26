@@ -1,5 +1,6 @@
 package com.highway.resource;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,12 +35,14 @@ public class BacklogController {
 	private MapValidationErrorService mapValidationErrorService;
 
 	@PostMapping("/{backlog_id}")
-	public ResponseEntity<?> createTask(@Valid @RequestBody ProjectTask projectTask, BindingResult result,
-			@PathVariable String backlog_id) {
+	public ResponseEntity<?> createTask(@Valid @RequestBody ProjectTask projectTask,
+			BindingResult result,
+			@PathVariable String backlog_id,
+			Principal principal) {
 		if (result.hasErrors())
 			mapValidationErrorService.mapValidationService(result);
 
-		ProjectTask newProjectTask = projectTaskService.addProjectTask(backlog_id, projectTask);
+		ProjectTask newProjectTask = projectTaskService.addProjectTask(backlog_id, projectTask,principal.getName());
 		return new ResponseEntity<>(newProjectTask, HttpStatus.CREATED);
 	}
 

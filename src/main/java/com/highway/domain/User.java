@@ -1,13 +1,18 @@
 package com.highway.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
@@ -18,7 +23,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class User implements UserDetails {
 	
@@ -40,10 +44,33 @@ public class User implements UserDetails {
 	private String confirmPassword;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
+	
+	@OneToMany(
+			cascade = CascadeType.REFRESH,
+			orphanRemoval = true,
+			fetch = FetchType.EAGER,
+			mappedBy = "user")
+	private List<Project> projects= new ArrayList<Project>();
 
 	public User() {}
 	
 	
+	
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+
+
+	public void setProject(Project project) {
+		this.projects.add(project);
+	}
+
+	public void removeProject(Project project) {
+		this.projects.remove(project);
+	}
+
+
 	public Long getId() {
 		return id;
 	}

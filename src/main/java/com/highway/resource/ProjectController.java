@@ -1,4 +1,5 @@
 package com.highway.resource;
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -31,29 +32,30 @@ public class ProjectController {
 
 	@PostMapping("")
 	public ResponseEntity<?> createProject(@Valid @RequestBody Project project,
+			Principal principal,
 			BindingResult result) {
 		
 		if(result.hasErrors())return validationService.mapValidationService(result);
 		
-		Project newProject = this.projectService.saveOrUpdateProject(project);
+		Project newProject = this.projectService.saveOrUpdateProject(project,principal.getName());
 		return new ResponseEntity<Project>(newProject,HttpStatus.CREATED);
 	}
 	
 	
 	@GetMapping("")
-	public List<Project> getAllProjects(){
-		return projectService.getAllProjects();
+	public List<Project> getAllProjects(Principal principal){
+		return projectService.getAllProjects(principal.getName());
 	}
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> getProjectByIdentifier(@PathVariable String projectId){
-		Project project = projectService.findByProjectIdentifier(projectId);
+	public ResponseEntity<?> getProjectByIdentifier(@PathVariable String projectId,Principal principal){
+		Project project = projectService.findByProjectIdentifier(projectId,principal.getName());
 		
 		return new ResponseEntity<>(project,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{projectId}")
-	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId){
-		projectService.deleteProjectByIdentifier(projectId);
+	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId,Principal principal){
+		projectService.deleteProjectByIdentifier(projectId,principal.getName());
 		return new ResponseEntity<String>(String.format("Project with %s was deleted", projectId),HttpStatus.OK);
 	}
 }

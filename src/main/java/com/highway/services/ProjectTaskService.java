@@ -22,15 +22,14 @@ public class ProjectTaskService {
 	
 	@Autowired
 	private ProjectRepos  projectRepos;
+	@Autowired
+	private ProjectService projectService;
 	
 	public ProjectTask addProjectTask(String projectIdentifier,
-			ProjectTask projectTask) {
+			ProjectTask projectTask,String username) {
 		
-		try {
 			// PTs to be add to specific project, project !=null. bl exist!.
-			Backlog backlog = backlogRepo.findByProjectIdentifier(projectIdentifier).orElseThrow(()->
-			new ProjectNotFoundException("Backlog not found"));
-			//  set bl to pj
+			Backlog backlog = projectService.findByProjectIdentifier(projectIdentifier, username).getBacklog();			//  set bl to pj
 			projectTask.setBacklog(backlog);
 			// set PTSequence
 			Integer blacklogSequence = backlog.getPTSequence();
@@ -47,10 +46,6 @@ public class ProjectTaskService {
 			}
 				
 			return projectTaskRepo.save(projectTask);
-		} catch (Exception e) {
-			// TODO: handle exception
-			throw new ProjectNotFoundException("Project Not found from trycatch");
-		}
 	}
 
 	public List<ProjectTask> findBacklogById(String id) {
